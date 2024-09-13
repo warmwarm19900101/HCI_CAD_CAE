@@ -1,0 +1,204 @@
+Dim swApp As Object
+Dim Part As Object
+Dim boolstatus As Boolean
+Dim longstatus As Long, longwarnings As Long
+
+Sub main()
+    UserForm1.Show
+End Sub
+
+Sub CreateModel(ByVal d As Double, ByVal D4 As Double, ByVal B As Double, ByVal D0 As Double, _
+                ByVal D3 As Double, ByVal E As Double, ByVal F As Double, _
+                ByVal D2 As Double, ByVal G As Double)
+
+    Set swApp = Application.SldWorks
+
+    ' Create a new document
+    Dim swSheetWidth As Double
+    swSheetWidth = 0
+    Dim swSheetHeight As Double
+    swSheetHeight = 0
+    Set Part = swApp.NewDocument("C:\ProgramData\SolidWorks\SOLIDWORKS 2021\templates\Part templates-GB-Revise1.prtdot", 0, swSheetWidth, swSheetHeight)
+    Dim swPart As PartDoc
+    Set swPart = Part
+    swApp.ActivateDoc2 "Part7", False, longstatus
+    Set Part = swApp.ActiveDoc
+    
+    ' Make sure the window is maximized
+    Dim myModelView As Object
+    Set myModelView = Part.ActiveView
+    myModelView.FrameState = swWindowState_e.swWindowMaximized
+
+    ' Select and create Sketch 1
+    boolstatus = Part.Extension.SelectByID2("Front plane", "PLANE", 0, 0, 0, False, 0, Nothing, 0)
+    Part.SketchManager.InsertSketch True
+    Part.ClearSelection2 True
+
+    ' Create the two circles in the first sketch
+    Dim skSegment As Object
+    Set skSegment = Part.SketchManager.CreateCircle(0#, 0#, 0#, d / 2000, 0#, 0#) ' Use d/2 as the radius
+    Set skSegment = Part.SketchManager.CreateCircle(0#, 0#, 0#, D4 / 2000, 0#, 0#) ' Use D4/2 as radius
+    Part.ClearSelection2 True
+
+    ' Set the dimensions of the first sketch
+    boolstatus = Part.Extension.SelectByID2("Arc1", "SKETCHSEGMENT", 0, 0, 0, False, 0, Nothing, 0)
+    If Not boolstatus Then
+        MsgBox "Error: Arc1 not found in Sketch1!", vbCritical
+        Exit Sub
+    End If
+    Dim myDisplayDim As Object
+    Set myDisplayDim = Part.AddDimension2(0.1, 0, 0)
+    Part.ClearSelection2 True
+
+    boolstatus = Part.Extension.SelectByID2("Arc2", "SKETCHSEGMENT", 0, 0, 0, False, 0, Nothing, 0)
+    If Not boolstatus Then
+        MsgBox "Error: Arc2 not found in Sketch1!", vbCritical
+        Exit Sub
+    End If
+    Set myDisplayDim = Part.AddDimension2(0.2, 0, 0)
+    Part.ClearSelection2 True
+
+    boolstatus = Part.Extension.SelectByID2("D1@Sketch1", "DIMENSION", 0, 0, 0, False, 0, Nothing, 0)
+    If Not boolstatus Then
+        MsgBox "Error: Dimension D1@Sketch1 not found!", vbCritical
+        Exit Sub
+    End If
+    Dim myDimension As Object
+    Set myDimension = Part.Parameter("D1@Sketch1")
+    myDimension.SystemValue = d / 1000
+
+    boolstatus = Part.Extension.SelectByID2("D2@Sketch1", "DIMENSION", 0, 0, 0, False, 0, Nothing, 0)
+    If Not boolstatus Then
+        MsgBox "Error: Dimension D2@Sketch1 not found!", vbCritical
+        Exit Sub
+    End If
+    Set myDimension = Part.Parameter("D2@Sketch1")
+    myDimension.SystemValue = D4 / 1000
+    Part.ClearSelection2 True
+
+    ' Create Feature Extrusion
+    Dim myFeature As Object
+    Set myFeature = Part.FeatureManager.FeatureExtrusion2(True, False, False, 0, 0, B / 1000, 0.01, False, False, False, False, 1.74532925199433E-02, 1.74532925199433E-02, False, False, False, False, True, True, True, 0, 0, False)
+
+    ' Display named views and zoom
+    Part.ShowNamedView2 "*Trimetric", 8
+    Part.ViewZoomtofit2
+
+    ' Insert a second sketch and create two circles
+    Part.SelectionManager.EnableContourSelection = False
+    boolstatus = Part.Extension.SelectByID2("Front plane", "PLANE", 0, 0, 0, True, 0, Nothing, 0)
+    Dim myRefPlane As Object
+    Set myRefPlane = Part.FeatureManager.InsertRefPlane(8, B / 1000, 0, 0, 0, 0)
+    Part.ClearSelection2 True
+    boolstatus = Part.Extension.SelectByID2("Plane1", "PLANE", 0, 0, 0, False, 0, Nothing, 0)
+    
+    
+    Part.SketchManager.InsertSketch True
+    Part.ClearSelection2 True
+    Set skSegment = Part.SketchManager.CreateCircle(0#, 0#, 0#, D0 / 2000, 0#, 0#) ' Use D0/2 as radius
+    Set skSegment = Part.SketchManager.CreateCircle(0#, 0#, 0#, D3 / 2000, 0#, 0#) ' Use D3/2 as the radius
+    Part.ClearSelection2 True
+
+    ' Set the dimensions of the second sketch
+    boolstatus = Part.Extension.SelectByID2("Arc1", "SKETCHSEGMENT", 0.100659625339447, -2.95274205317348E-02, -1.01299387937391E-02, False, 0, Nothing, 0)
+    If Not boolstatus Then
+        MsgBox "Error: Arc1 not found in Sketch2!", vbCritical
+        Exit Sub
+    End If
+    Set myDisplayDim = Part.AddDimension2(0.210235776505726, 1.00549522589972E-02, B / 1000)
+    Part.ClearSelection2 True
+    
+    boolstatus = Part.Extension.SelectByID2("D1@Sketch2@Part7.SLDPRT", "DIMENSION", 0.14005114062813, -6.99333644172667E-02, -3.46510260056448E-03, False, 0, Nothing, 0)
+    If Not boolstatus Then
+        MsgBox "Error: Dimension D1@Sketch2 not found!", vbCritical
+        Exit Sub
+    End If
+    Set myDimension = Part.Parameter("D1@Sketch2")
+    myDimension.SystemValue = D0 / 1000
+
+    boolstatus = Part.Extension.SelectByID2("Arc2", "SKETCHSEGMENT", 4.72922114280737E-02, -4.50681681800164E-02, 2.85894727654767E-02, False, 0, Nothing, 0)
+    If Not boolstatus Then
+        MsgBox "Error: Arc2 not found in Sketch2!", vbCritical
+        Exit Sub
+    End If
+    Set myDisplayDim = Part.AddDimension2(0.11286193804176, 1.23615585785046E-02, B / 1000)
+    Part.ClearSelection2 True
+
+    boolstatus = Part.Extension.SelectByID2("D2@Sketch2@Part7.SLDPRT", "DIMENSION", 0.05639909854803, -4.89533550920867E-02, 2.64234311993759E-02, False, 0, Nothing, 0)
+    If Not boolstatus Then
+        MsgBox "Error: Dimension D2@Sketch2 not found!", vbCritical
+        Exit Sub
+    End If
+    Set myDimension = Part.Parameter("D2@Sketch2")
+    myDimension.SystemValue = D3 / 1000
+    Part.ClearSelection2 True
+
+    ' Creating a Feature Cut
+    Set myFeature = Part.FeatureManager.FeatureCut4(True, False, False, 0, 0, E / 1000, B / 1000, False, False, False, False, 1.74532925199433E-02, 1.74532925199433E-02, False, False, False, False, False, True, True, True, True, False, 0, 0, False, False)
+    
+    ' Mirror Cut Features
+    Part.SelectionManager.EnableContourSelection = False
+    boolstatus = Part.Extension.SelectByID2("Front plane", "PLANE", 0, 0, 0, True, 0, Nothing, 0)
+    Set myRefPlane = Part.FeatureManager.InsertRefPlane(8, B / 2000, 0, 0, 0, 0)
+    Part.ClearSelection2 True
+    boolstatus = Part.Extension.SelectByID2("Cut-Extrude1", "BODYFEATURE", 0, 0, 0, False, 0, Nothing, 0)
+    boolstatus = Part.Extension.SelectByID2("Plane2", "PLANE", -0.166928828979508, 0.38085352544806, 0.156276453824319, True, 0, Nothing, 0)
+
+    Part.ClearSelection2 True
+    boolstatus = Part.Extension.SelectByID2("Cut-Extrude1", "BODYFEATURE", 0, 0, 0, False, 1, Nothing, 0)
+    boolstatus = Part.Extension.SelectByID2("Plane2", "PLANE", -0.166928828979508, 0.38085352544806, 0.156276453824319, True, 2, Nothing, 0)
+    
+    Set myFeature = Part.FeatureManager.InsertMirrorFeature(False, False, False, False)
+
+    'Cut-out holes on the belly
+    boolstatus = Part.Extension.SelectByID2("Plane2", "PLANE", 0, 0, 0, False, 0, Nothing, 0)
+    Part.SketchManager.InsertSketch True
+    Dim skPoint As Object
+    Set skPoint = Part.SketchManager.CreatePoint(0#, 0#, 0#)
+    Part.ClearSelection2 True
+    Set skSegment = Part.SketchManager.CreateCircle(0#, 0.136257, 0#, 0.038601, 0.117503, 0#)
+    Part.ClearSelection2 True
+    boolstatus = Part.Extension.SelectByID2("Arc1", "SKETCHSEGMENT", -1.33396081779724E-03, 7.99170213000956E-02, -2.64375608240308E-02, False, 0, Nothing, 0)
+    Set myDisplayDim = Part.AddDimension2(-5.40859903895807E-03, 7.55933775395192E-02, 0.057)
+    Part.ClearSelection2 True
+    boolstatus = Part.Extension.SelectByID2("D1@Sketch3@Part7.SLDPRT", "DIMENSION", -2.99616231069912E-02, 5.35366453369573E-02, 6.59130448483514E-03, False, 0, Nothing, 0)
+    Set myDimension = Part.Parameter("D1@Sketch3")
+    myDimension.SystemValue = D2 / 1000 'Diameter of cut hole
+    Part.ClearSelection2 True
+    boolstatus = Part.Extension.SelectByID2("Point4", "SKETCHPOINT", 0, 0.136257332595108, 0, False, 0, Nothing, 0)
+    boolstatus = Part.Extension.SelectByID2("Point1", "SKETCHPOINT", 0, 0, 0, True, 0, Nothing, 0)
+    Set myDisplayDim = Part.AddDimension2(-9.64982089892032E-02, 6.90584355193096E-02, F / 1000)
+    Part.ClearSelection2 True
+    boolstatus = Part.Extension.SelectByID2("D2@Sketch3@Part7.SLDPRT", "DIMENSION", -0.111975839067575, 6.05196860330822E-02, 4.51249136735681E-02, False, 0, Nothing, 0)
+    Set myDimension = Part.Parameter("D2@Sketch3")
+    myDimension.SystemValue = G / 1000 'Distance from the center of the cut hole to the center of the gear
+    Part.ClearSelection2 True
+    Set myFeature = Part.FeatureManager.FeatureCut4(False, False, False, 9, 1, E / 1000, E / 1000, False, False, False, False, 1.74532925199433E-02, 1.74532925199433E-02, False, False, False, False, False, True, True, True, True, False, 0, 0, False, False)
+    
+    Part.SelectionManager.EnableContourSelection = False
+    Part.ActivateSelectedFeature
+    boolstatus = Part.Extension.SelectByRay(-3.24008036076862E-02, -2.34560850437333E-02, 7.76116933871549E-02, -0.400036026779312, -0.515038074910024, -0.758094294050284, 3.07762276296931E-03, 2, True, 1, 0)
+    Part.ClearSelection2 True
+    boolstatus = Part.Extension.SelectByID2("Cut-Extrude2", "BODYFEATURE", 0, 0, 0, False, 4, Nothing, 0)
+    boolstatus = Part.Extension.SelectByRay(-3.24008036076862E-02, -2.34560850437333E-02, 7.76116933871549E-02, -0.400036026779312, -0.515038074910024, -0.758094294050284, 3.07762276296931E-03, 2, True, 1, 0)
+    
+    ' Circular pattern feature (6 cut holes)
+    Dim swFeat As Object
+    Dim swFeatMgr As Object
+    Set swFeatMgr = Part.FeatureManager
+    Dim swFeatData As Object
+    Set swFeatData = swFeatMgr.CreateDefinition(swFeatureNameID_e.swFmCirPattern)
+    swFeatData.Direction2 = False
+    swFeatData.EqualSpacing = False
+    swFeatData.GeometryPattern = False
+    swFeatData.ReverseDirection = False
+    swFeatData.Spacing = 1.0471975511966
+    swFeatData.TotalInstances = 6
+    swFeatData.VarySketch = False
+    Set swFeat = swFeatMgr.CreateFeature(swFeatData)
+    Part.ClearSelection2 True
+    boolstatus = Part.EditRebuild3()
+
+End Sub
+
+

@@ -1,0 +1,138 @@
+Dim swApp As Object
+
+Dim Part As Object
+Dim boolstatus As Boolean
+Dim longstatus As Long, longwarnings As Long
+
+Sub main()
+
+Set swApp = Application.SldWorks
+
+
+' New Document
+Dim swSheetWidth As Double
+swSheetWidth = 0
+Dim swSheetHeight As Double
+swSheetHeight = 0
+Set Part = swApp.NewDocument("C:\ProgramData\SolidWorks\SOLIDWORKS 2021\templates\Part templates-GB-Revise1.prtdot", 0, swSheetWidth, swSheetHeight)
+Dim swPart As PartDoc
+Set swPart = Part
+swApp.ActivateDoc2 "Part24", False, longstatus
+Set Part = swApp.ActiveDoc
+boolstatus = Part.Extension.SelectByID2("Front plane", "PLANE", 0, 0, 0, False, 0, Nothing, 0)
+Part.SketchManager.InsertSketch True
+Part.ClearSelection2 True
+Dim skSegment As Object
+Set skSegment = Part.SketchManager.CreateCircle(0#, 0#, 0#, 0.050764, -0.013619, 0#)
+Part.ClearSelection2 True
+Set skSegment = Part.SketchManager.CreateCircle(0#, 0#, 0#, 0.02501, -0.0104, 0#)
+Part.ClearSelection2 True
+boolstatus = Part.Extension.SelectByID2("Arc1", "SKETCHSEGMENT", 5.27446021505377E-02, 0, 0, False, 0, Nothing, 0)
+Dim myDisplayDim As Object
+Set myDisplayDim = Part.AddDimension2(6.51259641577061E-02, -2.47627240143369E-03, 0)
+Part.ClearSelection2 True
+boolstatus = Part.Extension.SelectByID2("D1@Sketch1@Part24.SLDPRT", "DIMENSION", 6.21544372759857E-02, -1.98101792114695E-03, 0, False, 0, Nothing, 0)
+Dim myDimension As Object
+Set myDimension = Part.Parameter("D1@Sketch1")
+myDimension.SystemValue = 0.567
+boolstatus = Part.Extension.SelectByID2("Arc2", "SKETCHSEGMENT", 0.140247447109185, -2.00353495870265E-02, 0, False, 0, Nothing, 0)
+Set myDisplayDim = Part.AddDimension2(0.185660906173112, -4.00706991740529E-03, 0)
+boolstatus = Part.Extension.SelectByID2("D1@Sketch1@Part24.SLDPRT", "DIMENSION", 6.21544372759857E-02, -1.98101792114695E-03, 0, False, 0, Nothing, 0)
+boolstatus = Part.Extension.SelectByID2("D2@Sketch1@Part24.SLDPRT", "DIMENSION", 0.172304006448428, 2.67137994493694E-03, 0, False, 0, Nothing, 0)
+Set myDimension = Part.Parameter("D2@Sketch1")
+myDimension.SystemValue = 0.08
+Part.ClearSelection2 True
+
+' Named View
+Part.ShowNamedView2 "*Trimetric", 8
+Part.ViewZoomtofit2
+Dim myFeature As Object
+Set myFeature = Part.FeatureManager.FeatureExtrusion2(True, False, False, 0, 0, 0.114, 0.01, False, False, False, False, 1.74532925199433E-02, 1.74532925199433E-02, False, False, False, False, True, True, True, 0, 0, False)
+Part.SelectionManager.EnableContourSelection = False
+boolstatus = Part.Extension.SelectByID2("前视基准面", "PLANE", 0, 0, 0, True, 0, Nothing, 0)
+Dim myRefPlane As Object
+Set myRefPlane = Part.FeatureManager.InsertRefPlane(8, 0.114, 0, 0, 0, 0)
+Part.ClearSelection2 True
+boolstatus = Part.Extension.SelectByID2("Plane1", "PLANE", 0, 0, 0, False, 0, Nothing, 0)
+Part.SketchManager.InsertSketch True
+Part.ClearSelection2 True
+Set skSegment = Part.SketchManager.CreateCircle(0#, 0#, 0#, 0.176144, -0.013224, 0#)
+Part.ClearSelection2 True
+Set skSegment = Part.SketchManager.CreateCircle(0#, 0#, 0#, 0.083008, -0.033005, 0#)
+Part.ClearSelection2 True
+boolstatus = Part.Extension.SelectByID2("Arc1", "SKETCHSEGMENT", 0.125509092810232, -7.83652344787346E-02, 1.41637170808405E-02, False, 0, Nothing, 0)
+Set myDisplayDim = Part.AddDimension2(0.218107010397659, -4.00846240893316E-04, 0.114)
+Part.ClearSelection2 True
+boolstatus = Part.Extension.SelectByID2("D1@Sketch2@Part24.SLDPRT", "DIMENSION", 0.14610608792075, -0.077589341068054, 2.7678329487752E-03, False, 0, Nothing, 0)
+Set myDimension = Part.Parameter("D1@Sketch2")
+myDimension.SystemValue = 0.517
+boolstatus = Part.Extension.SelectByID2("Arc2", "SKETCHSEGMENT", 5.06385345639214E-02, -5.97437926224016E-02, 4.10207574749712E-02, False, 0, Nothing, 0)
+Set myDisplayDim = Part.AddDimension2(0.121900006629915, 3.24538392180784E-03, 0.114)
+boolstatus = Part.Extension.SelectByID2("D1@Sketch2@Part24.SLDPRT", "DIMENSION", 0.14610608792075, -0.077589341068054, 2.7678329487752E-03, False, 0, Nothing, 0)
+boolstatus = Part.Extension.SelectByID2("D2@Sketch2@Part24.SLDPRT", "DIMENSION", 7.23317598909825E-02, -5.43125387476378E-02, 2.58836244059935E-02, False, 0, Nothing, 0)
+Set myDimension = Part.Parameter("D2@Sketch2")
+myDimension.SystemValue = 0.128
+Part.ClearSelection2 True
+Set myFeature = Part.FeatureManager.FeatureCut4(True, False, False, 0, 0, 0.0425, 0.114, False, False, False, False, 1.74532925199433E-02, 1.74532925199433E-02, False, False, False, False, False, True, True, True, True, False, 0, 0, False, False)
+
+Part.SelectionManager.EnableContourSelection = False
+boolstatus = Part.Extension.SelectByID2("Front plane", "PLANE", 0, 0, 0, True, 0, Nothing, 0)
+Set myRefPlane = Part.FeatureManager.InsertRefPlane(8, 0.057, 0, 0, 0, 0)
+Part.ClearSelection2 True
+boolstatus = Part.Extension.SelectByID2("Cut-Extrude1", "BODYFEATURE", 0, 0, 0, False, 0, Nothing, 0)
+boolstatus = Part.Extension.SelectByID2("Plane2", "PLANE", -0.166928828979508, 0.38085352544806, 0.156276453824319, True, 0, Nothing, 0)
+
+Part.ClearSelection2 True
+boolstatus = Part.Extension.SelectByID2("Cut-Extrude1", "BODYFEATURE", 0, 0, 0, False, 1, Nothing, 0)
+boolstatus = Part.Extension.SelectByID2("Plane2", "PLANE", -0.166928828979508, 0.38085352544806, 0.156276453824319, True, 2, Nothing, 0)
+
+Set myFeature = Part.FeatureManager.InsertMirrorFeature(False, False, False, False)
+
+
+
+boolstatus = Part.Extension.SelectByID2("Plane2", "PLANE", 0, 0, 0, False, 0, Nothing, 0)
+Part.SketchManager.InsertSketch True
+Dim skPoint As Object
+Set skPoint = Part.SketchManager.CreatePoint(0#, 0#, 0#)
+Part.ClearSelection2 True
+Set skSegment = Part.SketchManager.CreateCircle(0#, 0.136257, 0#, 0.038601, 0.117503, 0#)
+Part.ClearSelection2 True
+boolstatus = Part.Extension.SelectByID2("Arc1", "SKETCHSEGMENT", -1.33396081779724E-03, 7.99170213000956E-02, -2.64375608240308E-02, False, 0, Nothing, 0)
+Set myDisplayDim = Part.AddDimension2(-5.40859903895807E-03, 7.55933775395192E-02, 0.057)
+Part.ClearSelection2 True
+boolstatus = Part.Extension.SelectByID2("D1@Sketch3@Part24.SLDPRT", "DIMENSION", -2.99616231069912E-02, 5.35366453369573E-02, 6.59130448483514E-03, False, 0, Nothing, 0)
+Set myDimension = Part.Parameter("D1@Sketch3")
+myDimension.SystemValue = 0.1167
+Part.ClearSelection2 True
+boolstatus = Part.Extension.SelectByID2("Point4", "SKETCHPOINT", 0, 0.136257332595108, 0, False, 0, Nothing, 0)
+boolstatus = Part.Extension.SelectByID2("Point1", "SKETCHPOINT", 0, 0, 0, True, 0, Nothing, 0)
+Set myDisplayDim = Part.AddDimension2(-9.64982089892032E-02, 6.90584355193096E-02, 0.057)
+Part.ClearSelection2 True
+boolstatus = Part.Extension.SelectByID2("D2@Sketch3@Part24.SLDPRT", "DIMENSION", -0.111975839067575, 6.05196860330822E-02, 4.51249136735681E-02, False, 0, Nothing, 0)
+Set myDimension = Part.Parameter("D2@Sketch3")
+myDimension.SystemValue = 0.16125
+Part.ClearSelection2 True
+Set myFeature = Part.FeatureManager.FeatureCut4(False, False, False, 9, 1, 0.0425, 0.0425, False, False, False, False, 1.74532925199433E-02, 1.74532925199433E-02, False, False, False, False, False, True, True, True, True, False, 0, 0, False, False)
+Part.SelectionManager.EnableContourSelection = False
+Part.ActivateSelectedFeature
+boolstatus = Part.Extension.SelectByRay(-3.24008036076862E-02, -2.34560850437333E-02, 7.76116933871549E-02, -0.400036026779312, -0.515038074910024, -0.758094294050284, 3.07762276296931E-03, 2, True, 1, 0)
+Part.ClearSelection2 True
+boolstatus = Part.Extension.SelectByID2("Cut-Extrude2", "BODYFEATURE", 0, 0, 0, False, 4, Nothing, 0)
+boolstatus = Part.Extension.SelectByRay(-3.24008036076862E-02, -2.34560850437333E-02, 7.76116933871549E-02, -0.400036026779312, -0.515038074910024, -0.758094294050284, 3.07762276296931E-03, 2, True, 1, 0)
+Dim swFeat As Object
+Dim swFeatMgr As Object
+
+
+Set swFeatMgr = Part.FeatureManager
+Dim swFeatData As Object
+Set swFeatData = swFeatMgr.CreateDefinition(swFeatureNameID_e.swFmCirPattern)
+swFeatData.Direction2 = False
+swFeatData.EqualSpacing = False
+swFeatData.GeometryPattern = False
+swFeatData.ReverseDirection = False
+swFeatData.Spacing = 1.0471975511966
+swFeatData.TotalInstances = 6
+swFeatData.VarySketch = False
+Set swFeat = swFeatMgr.CreateFeature(swFeatData)
+Part.ClearSelection2 True
+End Sub

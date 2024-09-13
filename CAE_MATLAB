@@ -1,0 +1,71 @@
+Z1 = 22;
+P = 1200; 
+n = 5172;
+mn = 5; 
+beta = 14.07 * pi / 180;  
+alpha_n = 25 * pi / 180; 
+upsilon = 8.92; 
+rho = 986;
+C6 = 29.66;
+han_star = 1;
+h = 0.1; 
+b = 119; 
+Cp = 1875;
+k = 0.13;
+
+i_values = [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
+
+for i = i_values
+    Z2 = Z1 * i;
+    d2 = (mn * Z2) / cos(beta);
+    T = 9550 * P / n;
+    d1 = (mn * Z1) / cos(beta);
+
+    Fn = 2 * T / (1e-3 * d1 * cos(alpha_n) * cos(beta));
+
+    gs = 0.5 * (sqrt((d1 + 2 * mn)^2 - (d1 * cos(alpha_n))^2) + ...
+        sqrt((d2 + 2 * mn)^2 - (d2 * cos(alpha_n))^2) -...
+        (d1 + d2) * sin(alpha_n));
+
+    Vs = (0.026118 * n * gs * (Z1 + Z2) * 1e-3) / Z2;
+
+    mu = upsilon * rho * 1e-6;
+
+    Vr = 0.1047 * n * (d1 * sin(alpha_n) -...
+        0.25 * gs * ((Z1 + Z2) / Z2)) * 1e-3;
+
+    f1 = 0.0127 * log10((C6 * Fn) / (b * mu * Vs * (Vr^2) * 1e-3));
+
+    Qg = f1 * Fn * Vs;
+
+    alpha_t = atan(tan(alpha_n) / cos(beta));
+
+    alpha_at1 = acos((Z1 * cos(alpha_t)) / (Z1 + 2 * han_star * cos(beta)));
+
+    alpha_at2 = acos((Z2 * cos(alpha_t)) / (Z2 + 2 * han_star * cos(beta)));
+
+    epsilon_alpha = (Z1 * (tan(alpha_at1) - tan(alpha_t)) +...
+        Z2 * (tan(alpha_at2) - tan(alpha_t))) / (2 * pi);
+
+    Qr = 90000 * Vr * h * b * epsilon_alpha * 1e-6;
+
+    Q = Qg + Qr;
+
+    V = pi * d1 * n * 1e-3 * 1 / 60;
+
+    Re1 = (V * d1 * 1e-3) / (2 * upsilon * 1e-6);
+
+    Pr = (upsilon * rho * Cp * 1e-6) / k;
+
+    alpha_1 = (0.228 * Re1^0.731 * Pr^0.333 * k * 1e-6) / (d1 * 1e-3);
+
+    Re2 = (V * d2 * 1e-3) / (2 * upsilon * 1e-6);
+
+    alpha_2 = (0.228 * Re2^0.731 * Pr^0.333 * k * 1e-6) / (d2 * 1e-3);
+
+    fprintf('i = %.1f:\n', i);
+    fprintf('Q = %.3f W\n', Q);
+    fprintf('alpha_1 = %.7f W/(mm^2 * K)\n', alpha_1);
+    fprintf('alpha_2 = %.7f W/(mm^2 * K)\n', alpha_2);
+    fprintf('----------------------------------\n');
+end

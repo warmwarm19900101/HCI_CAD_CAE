@@ -1,0 +1,147 @@
+Private Sub CommandButton1_Click()
+    
+    
+    ' Button 1: Select Excel file
+    Dim ExcelApp As Object
+    Dim FileDialog As Object
+    Dim FilePath As String
+    
+    Set ExcelApp = CreateObject("Excel.Application")
+    Set FileDialog = ExcelApp.FileDialog(3) ' msoFileDialogFilePicker
+    
+    FileDialog.AllowMultiSelect = False
+    FileDialog.Title = "Select Excel File"
+    If FileDialog.Show = -1 Then ' If user selects a file
+        FilePath = FileDialog.SelectedItems(1)
+        TextBox1.Text = FilePath ' Display file path in TextBox1
+    End If
+    
+    ExcelApp.Quit
+    Set ExcelApp = Nothing
+    Set FileDialog = Nothing
+End Sub
+
+Private Sub CommandButton2_Click()
+    ' Button 2: Populate ComboBox with values from Column A of the selected Excel file
+    Dim ExcelApp As Object
+    Dim Workbook As Object
+    Dim Worksheet As Object
+    Dim LastRow As Long
+    Dim i As Long
+    Dim FilePath As String
+    
+    FilePath = TextBox1.Text
+    If FilePath = "" Then
+        MsgBox "Please select an Excel file first.", vbExclamation
+        Exit Sub
+    End If
+    
+    Set ExcelApp = CreateObject("Excel.Application")
+    Set Workbook = ExcelApp.Workbooks.Open(FilePath)
+    Set Worksheet = Workbook.Sheets(1)
+    
+    LastRow = Worksheet.Cells(Worksheet.Rows.Count, "A").End(-4162).Row
+    ComboBox1.Clear ' Clear ComboBox before populating
+    
+    For i = 2 To LastRow ' Exclude header (Row 1)
+        ComboBox1.AddItem Worksheet.Cells(i, 1).Value
+    Next i
+    
+    Workbook.Close False
+    ExcelApp.Quit
+    Set Workbook = Nothing
+    Set ExcelApp = Nothing
+End Sub
+
+Private Sub CommandButton3_Click()
+    ' Button 3: Retrieve data based on ComboBox selection and populate TextBoxes
+    Dim ExcelApp As Object
+    Dim Workbook As Object
+    Dim Worksheet As Object
+    Dim SelectedItem As String
+    Dim FilePath As String
+    Dim i As Long
+    Dim RowNumber As Long
+    
+    FilePath = TextBox1.Text
+    SelectedItem = ComboBox1.Value
+    
+    If FilePath = "" Then
+        MsgBox "Please select an Excel file first.", vbExclamation
+        Exit Sub
+    End If
+    
+    If SelectedItem = "" Then
+        MsgBox "Please select an item from the ComboBox.", vbExclamation
+        Exit Sub
+    End If
+    
+    Set ExcelApp = CreateObject("Excel.Application")
+    Set Workbook = ExcelApp.Workbooks.Open(FilePath)
+    Set Worksheet = Workbook.Sheets(1)
+    
+    ' Find the row number of the selected item in the ComboBox
+    For i = 2 To Worksheet.Cells(Worksheet.Rows.Count, "A").End(-4162).Row
+        If Worksheet.Cells(i, 1).Value = SelectedItem Then
+            RowNumber = i
+            Exit For
+        End If
+    Next i
+    
+    If RowNumber = 0 Then
+        MsgBox "Selected item not found in the Excel file.", vbExclamation
+        Workbook.Close False
+        ExcelApp.Quit
+        Exit Sub
+    End If
+    
+    ' Populate the TextBoxes with values from columns B to M
+    For i = 2 To 13
+        Me.Controls("TextBox" & i).Text = Worksheet.Cells(RowNumber, i).Value
+    Next i
+    
+    Workbook.Close False
+    ExcelApp.Quit
+    Set Workbook = Nothing
+    Set ExcelApp = Nothing
+End Sub
+Private Sub CommandButton4_Click()
+
+    ' Declare variables
+    Dim d As Double
+    Dim D4 As Double
+    Dim B As Double
+    Dim D0 As Double
+    Dim D3 As Double
+    Dim E As Double
+    Dim F As Double
+    Dim D2 As Double
+    Dim G As Double
+
+    ' Get values from the textboxes and assign them to variables
+    d = Val(TextBox2.Text)
+    D4 = Val(TextBox10.Text)
+    B = Val(TextBox4.Text)
+    D0 = Val(TextBox6.Text)
+    D3 = Val(TextBox9.Text)
+    E = Val(TextBox11.Text)
+    F = Val(TextBox12.Text)
+    D2 = Val(TextBox8.Text)
+    G = Val(TextBox13.Text)
+
+    ' Run the main macro with these variables
+    Call CreateModel(d, D4, B, D0, D3, E, F, D2, G)
+
+    ' Show message box after the process is complete
+    MsgBox "The model was created successfully.", vbInformation
+
+    ' Close the form
+    Unload Me
+
+End Sub
+
+
+
+Private Sub UserForm_Click()
+
+End Sub

@@ -49,7 +49,7 @@ Part.ViewZoomtofit2
 Dim myFeature As Object
 Set myFeature = Part.FeatureManager.FeatureExtrusion2(True, False, False, 0, 0, 0.114, 0.01, False, False, False, False, 1.74532925199433E-02, 1.74532925199433E-02, False, False, False, False, True, True, True, 0, 0, False)
 Part.SelectionManager.EnableContourSelection = False
-boolstatus = Part.Extension.SelectByID2("前视基准面", "PLANE", 0, 0, 0, True, 0, Nothing, 0)
+boolstatus = Part.Extension.SelectByID2("Front plane", "PLANE", 0, 0, 0, True, 0, Nothing, 0)
 Dim myRefPlane As Object
 Set myRefPlane = Part.FeatureManager.InsertRefPlane(8, 0.114, 0, 0, 0, 0)
 Part.ClearSelection2 True
